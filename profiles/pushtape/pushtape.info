@@ -19,6 +19,7 @@ dependencies[] = taxonomy
 dependencies[] = field_ui
 dependencies[] = file
 dependencies[] = rdf
+dependencies[] = update
 
 ;Contrib
 dependencies[] = features
@@ -37,6 +38,10 @@ dependencies[] = link
 dependencies[] = colorbox
 dependencies[] = libraries
 
+; WYSIWYG editing
+dependencies[] = wysiwyg_starter
+dependencies[] = wysiwyg_starter_formats
+
 ;Install Profile
 dependencies[] = pushtape_ui
 dependencies[] = pushtape_discography
@@ -50,11 +55,4 @@ dependencies[] = pushtape_player
 dependencies[] = pushtape_services
 
 files[] = pushtape.profile
-
-
-; Information added by Drupal.org packaging script on 2015-11-05
-version = "7.x-1.0-beta24"
-core = "7.x"
-project = "pushtape"
-datestamp = "1446696864"
 
