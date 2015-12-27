@@ -19,7 +19,9 @@ function wysiwyg_starter_wysiwyg_plugin($editor, $version) {
         'load' => TRUE,
       ),
       'mediaembed' => array(
-        'extensions' => array('mediaembed' => t('Media Embed')),
+         'buttons' => array(
+             'MediaEmbed' => 'Media Embed',
+         ),
         'path' => wysiwyg_get_path('ckeditor_media_embed') . '/mediaembed',
         'internal' => FALSE,
         'load' => TRUE,
