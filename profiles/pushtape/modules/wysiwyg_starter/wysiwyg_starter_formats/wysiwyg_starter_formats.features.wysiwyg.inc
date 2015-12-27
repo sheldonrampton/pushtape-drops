@@ -45,6 +45,7 @@ function wysiwyg_starter_formats_wysiwyg_default_profiles() {
       'advanced__active_tab' => 'edit-appearance',
       'forcePasteAsPlainText' => 0,
     ),
+    'rdf_mapping' => array(),
   );
 
   // Exported profile: full_html
@@ -103,6 +104,9 @@ function wysiwyg_starter_formats_wysiwyg_default_profiles() {
         'codemirror' => array(
           'codemirror' => 1,
         ),
+        'mediaembed' => array(
+          'MediaEmbed' => 1,
+        ),
       ),
       'toolbarLocation' => 'top',
       'resize_enabled' => 1,
@@ -117,6 +121,7 @@ function wysiwyg_starter_formats_wysiwyg_default_profiles() {
       'advanced__active_tab' => 'edit-basic',
       'forcePasteAsPlainText' => 0,
     ),
+    'rdf_mapping' => array(),
   );
 
   return $profiles;
