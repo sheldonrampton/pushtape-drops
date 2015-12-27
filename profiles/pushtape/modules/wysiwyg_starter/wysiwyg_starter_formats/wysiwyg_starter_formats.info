@@ -14,5 +14,5 @@ features[wysiwyg][] = full_html
 version = "7.x-1.x-dev"
 core = "7.x"
 project = "wysiwyg_starter"
-datestamp = "1451176756"
+datestamp = "1451194440"
 

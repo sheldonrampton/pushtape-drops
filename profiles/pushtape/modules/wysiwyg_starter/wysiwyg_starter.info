@@ -16,7 +16,6 @@ dependencies[] = imce_wysiwyg
 dependencies[] = libraries
 dependencies[] = strongarm
 dependencies[] = wysiwyg
-dependencies[] = wysiwyg_mediaembed
 features[ctools][] = strongarm:strongarm:1
 features[features_api][] = api:2
 features[variable][] = imce_custom_content
@@ -27,5 +26,5 @@ features[variable][] = imce_profiles
 version = "7.x-1.x-dev"
 core = "7.x"
 project = "wysiwyg_starter"
-datestamp = "1451176756"
+datestamp = "1451194440"
 

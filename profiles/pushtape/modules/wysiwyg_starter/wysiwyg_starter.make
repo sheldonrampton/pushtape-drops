@@ -12,7 +12,6 @@ projects[imce_crop] = 1.1
 projects[imce_filefield] = 1.1
 projects[imce_mkdir] = 1.0
 projects[imce_wysiwyg] = 1.0
-projects[wysiwyg_mediaembed] = 1.0
 
 ; Specify the revision for the WYSIWYG module itself
 projects[wysiwyg][version] = "2.x-dev"
@@ -36,4 +35,6 @@ libraries[ckeditor][destination] = libraries
 libraries[ckeditor_plugins][download][type] = "get"
 libraries[ckeditor_plugins][download][url] = "http://download.ckeditor.com/codemirror/releases/codemirror_1.13.zip"
 libraries[ckeditor_plugins][destination] = libraries
-
+libraries[ckeditor_media_embed][download][type] = "get"
+libraries[ckeditor_media_embed][download][url] = "http://download.ckeditor.com/mediaembed/releases/mediaembed_0.7_0.zip"
+libraries[ckeditor_media_embed][destination] = libraries
