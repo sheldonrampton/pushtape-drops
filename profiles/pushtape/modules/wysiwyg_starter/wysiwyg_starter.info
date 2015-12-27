@@ -26,5 +26,5 @@ features[variable][] = imce_profiles
 version = "7.x-1.x-dev"
 core = "7.x"
 project = "wysiwyg_starter"
-datestamp = "1451194440"
+datestamp = "1451201340"
 
