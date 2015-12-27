@@ -31,7 +31,7 @@ projects[strongarm] = 2.0
 
 ; Libraries
 libraries[ckeditor][download][type] = "get"
-libraries[ckeditor][download][url] = "http://download.cksource.com/CKEditor/CKEditor/CKEditor%204.5.6/ckeditor_4.5.6_standard.zip"
+libraries[ckeditor][download][url] = "http://download.cksource.com/CKEditor/CKEditor/CKEditor%204.5.6/ckeditor_4.5.6_full.zip"
 libraries[ckeditor][destination] = libraries
 libraries[ckeditor_plugins][download][type] = "get"
 libraries[ckeditor_plugins][download][url] = "http://download.ckeditor.com/codemirror/releases/codemirror_1.13.zip"
