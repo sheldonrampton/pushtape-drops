@@ -1,0 +1,4 @@
+name: hap-smith-com
+recipe: custom
+config:
+  webroot: .
