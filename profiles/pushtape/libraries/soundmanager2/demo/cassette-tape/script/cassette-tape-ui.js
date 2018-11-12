@@ -8,7 +8,13 @@
 
 (function(window) {
 
+/* global window, document, Image, soundManager */
+
 var caughtError = false;
+var utils;
+var dragHandler;
+var tapeUIs = [];
+var ignoreNextClick = false;
 
 var CanvasImage = function(canvas, image) {
 
@@ -36,8 +42,8 @@ var CanvasImage = function(canvas, image) {
   this.element = canvas || document.createElement('canvas');
   // IE 10 complains if 'auto' is used for style.width|height.
 
-  this.element.style.width = width+'px';
-  this.element.style.height = height+'px';
+  this.element.style.width = width + 'px';
+  this.element.style.height = height + 'px';
   this.element.width = width;
   this.element.height = height;
   this.context = this.element.getContext('2d');
@@ -60,8 +66,8 @@ CanvasImage.prototype = {
         this.context.drawImage(this.element, x, y);
         // Add an extra layer, prevents it from rendering lines
         // on top of the images (does makes it slower though)
-        if (x>=0 && y>=0) {
-          this.context.drawImage(this.element, -(x-1), -(y-1));
+        if (x >= 0 && y >= 0) {
+          this.context.drawImage(this.element, -(x - 1), -(y - 1));
         }
       }
     }
@@ -211,7 +217,7 @@ function imageMask(imageSrc, maskSrc, canvasWidth, canvasHeight, useRepeat, onco
 
   }
 
-  function init() {
+  function initImage() {
 
     // preload source / target images
 
@@ -225,7 +231,7 @@ function imageMask(imageSrc, maskSrc, canvasWidth, canvasHeight, useRepeat, onco
 
   }
 
-  init();
+  initImage();
 
 }
 
@@ -253,23 +259,15 @@ function TapeUI(oOptions) {
   var dom = {};
 
   var spoolWidth = 91;
-
   var borderMaxWidth = 76;
-
-  var reelBoxWidth = 234;
-
   var tapeWidth = 480;
-  var tapeHeight = parseInt(tapeWidth/1.6, 10);
-
-  var blurCanvas;
+  var tapeHeight = parseInt(tapeWidth / 1.6, 10);
 
   var maskCanvas;
   var maskCanvasLoaded;
-  var maskContext;
+  // var maskContext;
   var maskImage;
   var maskVisible;
-
-  var context;
 
   function getBackgroundURL(node) {
 
@@ -297,7 +295,7 @@ function TapeUI(oOptions) {
 
     url = url.replace('url(', '').replace(')', '');
 
-    url = url.replace(/\'/g, '').replace(/\"/g, '');
+    url = url.replace(/'/g, '').replace(/"/g, '');
 
     return url;
 
@@ -343,7 +341,7 @@ function TapeUI(oOptions) {
   function initMask(callback) {
 
     if (!dom.node.className.match(/cutout/i)) {
-      return false;
+      return;
     }
 
     // draw our tape cut-outs
@@ -428,7 +426,7 @@ function TapeUI(oOptions) {
         callback();
       }
 
-    }
+    };
 
     image.src = url;
 
@@ -440,20 +438,20 @@ function TapeUI(oOptions) {
 
     // don't center unless draggable.
     if (!dragHandler.data.dragTarget.node) {
-      return false;
+      return;
     }
 
     var screenX = window.innerWidth,
-        screenX2 = parseInt(screenX/2, 10),
+        screenX2 = parseInt(screenX / 2, 10),
         screenY = window.innerHeight,
-        screenY2 = parseInt(screenY/2, 10),
+        screenY2 = parseInt(screenY / 2, 10),
         x, y,
         node = dom.node,
         blurNode = dom.blurNode;
 
     if (node) {
-      x = parseInt(screenX2 - (tapeWidth/2), 10);
-      y = parseInt(screenY2 - (tapeHeight/2), 10);
+      x = parseInt(screenX2 - (tapeWidth / 2), 10);
+      y = parseInt(screenY2 - (tapeHeight / 2), 10);
       node.style.left = x + 'px';
       node.style.top = y + 'px';
       if (blurNode) {
@@ -461,12 +459,12 @@ function TapeUI(oOptions) {
         blurNode.style.marginTop = -y + 'px';
       }
     }
- 
+
   }
 
   var readyCompleteTimer = null;
 
-  function readyComplete(loader) {
+  function readyComplete(/*loader*/) {
 
     utils.css.add(dom.node, css.ready);
     utils.css.add(dom.node, css.dropin);
@@ -511,7 +509,7 @@ function TapeUI(oOptions) {
 
   }
 
-  function init() {
+  function initTapeUI() {
 
     var i, j;
 
@@ -525,7 +523,7 @@ function TapeUI(oOptions) {
       label: oOptions.node.querySelectorAll('div.label'),
       maskImages: oOptions.node.querySelectorAll('.image-mask'),
       blurNode: oOptions.node.querySelectorAll('.blur-image')
-    }
+    };
 
     if (dom.canvas && dom.canvas.length) {
       dom.canvas = dom.canvas[0];
@@ -539,7 +537,7 @@ function TapeUI(oOptions) {
 
     // images needing masking?
     if (dom.maskImages) {
-      for (i=0, j=dom.maskImages.length; i<j; i++) {
+      for (i = 0, j = dom.maskImages.length; i < j; i++) {
         createMaskedImage(dom.maskImages[i]);
       }
     }
@@ -572,7 +570,7 @@ function TapeUI(oOptions) {
     // limit to between 0 and 1
     size = Math.min(1, Math.max(0, size));
 
-    var borderWidth = Math.floor(borderMaxWidth*size);
+    var borderWidth = Math.floor(borderMaxWidth * size);
 
     var margin;
 
@@ -582,7 +580,7 @@ function TapeUI(oOptions) {
 
       reel.style.borderWidth = borderWidth + 'px';
 
-      margin = -(Math.floor(spoolWidth/2) + borderWidth) + 'px';
+      margin = -(Math.floor(spoolWidth / 2) + borderWidth) + 'px';
 
       reel.style.marginLeft = margin;
 
@@ -598,7 +596,7 @@ function TapeUI(oOptions) {
 
   function deg2rad(degrees) {
 
-    return (Math.PI/180)*degrees;
+    return (Math.PI / 180) * degrees;
 
   }
 
@@ -615,27 +613,27 @@ function TapeUI(oOptions) {
 
     // draw a line of tape between the two reels, at angles relative to the amount of tape on each reel.
 
-    var leftReelRadius = borderMaxWidth - (borderMaxWidth * progress);
+    var leftReelRadius = borderMaxWidth - (borderMaxWidth * progress * 0.995);
 
-    var rightReelRadius = (borderMaxWidth * progress);
+    var rightReelRadius = (borderMaxWidth * progress * 1.0425);
 
     var bottomTapeOffset = scaleHeight(0.998);
 
     var leftReel = {
-      left: Math.floor(scaleWidth(0.29) - (spoolWidth/2) - leftReelRadius) + 4,
+      left: Math.floor(scaleWidth(0.29) - (spoolWidth / 2) - leftReelRadius) + 4,
       top: scaleHeight(0.42)
     };
 
     var guideRadius = 16;
 
     var rightReel = {
-      left: Math.floor(scaleWidth(0.71) + (spoolWidth/2) + rightReelRadius) - 3,
+      left: Math.floor(scaleWidth(0.71) + (spoolWidth / 2) + rightReelRadius) - 3,
       top: scaleHeight(0.42)
     };
 
     var leftGuide = {
       left: scaleWidth(0.11) - guideRadius,
-      top: bottomTapeOffset - guideRadius*2
+      top: bottomTapeOffset - (guideRadius * 2)
     };
 
     var rightGuide = {
@@ -660,7 +658,7 @@ function TapeUI(oOptions) {
 
     if (!forceUpdate && tapeCache.leftReel.left === leftReel.left && tapeCache.rightReel.left === rightReel.left) {
       // no change since last time.
-      return false;
+      return;
     }
 
     // otherwise, update everything.
@@ -680,7 +678,7 @@ function TapeUI(oOptions) {
     context.moveTo(bottomMidPoint.left, bottomMidPoint.top);
 
     // -> left guide
-    context.lineTo(bottomLeftPoint.from[0] + guideRadius, bottomLeftPoint.from[1] + guideRadius*2);
+    context.lineTo(bottomLeftPoint.from[0] + guideRadius, bottomLeftPoint.from[1] + (guideRadius * 2));
 
     // arc
     context.arc(bottomLeftPoint.from[0] + guideRadius, bottomLeftPoint.from[1] + guideRadius, guideRadius, deg2rad(90), deg2rad(180), false);
@@ -732,7 +730,7 @@ function TapeUI(oOptions) {
 
   }
 
-  function setReelSpeed(reel, speed) {
+  function setReelSpeed(/*reel, speed*/) {
 
     // base speed plus a given amount based on speed (multiplier?)
 
@@ -743,7 +741,7 @@ function TapeUI(oOptions) {
     var newFrames = 0;
 
     setReelSpeed(dom.reels[0], progress);
-    newFrames += setReelSize(0, dom.reels[0], 1-progress);
+    newFrames += setReelSize(0, dom.reels[0], 1 - progress);
     newFrames += setReelSize(1, dom.reels[1], progress);
 
     return newFrames;
@@ -797,36 +795,32 @@ function TapeUI(oOptions) {
       });
     },
     dom: dom,
-    init: init,
+    init: initTapeUI,
     setProgress: setProgress,
     start: start,
     stop: stop
-    
+
   };
 
 }
 
-var tapeUIs = [];
-
 function resetTapeUIs() {
 
-  for (var i=tapeUIs.length; i--;) {
+  for (var i = tapeUIs.length; i--;) {
     tapeUIs[i].setProgress(0);
   }
 
 }
 
-var ignoreNextClick = false;
-
-var dragHandler = (function() {
+dragHandler = (function() {
 
   var css,
       data,
-      dom,
       events;
 
   function findPos(obj) {
-    var curleft = curtop = 0;
+    var curleft = 0;
+    var curtop = 0;
     if (obj.offsetParent) {
       do {
         curleft += obj.offsetLeft;
@@ -873,7 +867,7 @@ var dragHandler = (function() {
         return true;
       }
       // additional safety check
-      if (clickTarget && clickTarget.tagName == 'INPUT') {
+      if (clickTarget && clickTarget.tagName === 'INPUT') {
         ignoreNextClick = true;
         return true;
       }
@@ -923,15 +917,8 @@ var dragHandler = (function() {
       e.preventDefault();
       return false;
     }
-    
-  };
 
-  function updateLastXY() {
-    var target = data.dragTarget.node;
-    var xy = findPos(target);
-    data.dragTarget.lastX = xy[0];
-    data.dragTarget.lastY = xy[1];
-  }
+  };
 
   function addEvents() {
     if (data.dragTarget && data.dragTarget.node) {
@@ -939,7 +926,7 @@ var dragHandler = (function() {
     }
   }
 
-  function init() {
+  function initDragHandler() {
     data.dragTarget.node = document.querySelector('.tape.draggable');
     data.dragTarget.blurNode = document.querySelector('.tape.draggable .blur-image');
     addEvents();
@@ -947,80 +934,14 @@ var dragHandler = (function() {
 
   return {
     data: data,
-    init: init
-  }
-
-}());
-
-var utils = (function() {
-
-  var addEventHandler = (typeof window.addEventListener !== 'undefined' ? function(o, evtName, evtHandler) {
-    return o.addEventListener(evtName,evtHandler,false);
-  } : function(o, evtName, evtHandler) {
-    o.attachEvent('on'+evtName,evtHandler);
-  });
-
-  var removeEventHandler = (typeof window.removeEventListener !== 'undefined' ? function(o, evtName, evtHandler) {
-    return o.removeEventListener(evtName,evtHandler,false);
-  } : function(o, evtName, evtHandler) {
-    return o.detachEvent('on'+evtName,evtHandler);
-  });
-
-  var classContains = function(o,cStr) {
-    return (typeof(o.className)!=='undefined'?o.className.match(new RegExp('(\s|^)'+cStr+'(\s|$)')):false);
+    init: initDragHandler
   };
-
-  var addClass = function(o,cStr) {
-    if (!o || !cStr || classContains(o,cStr)) {
-      return false;
-    }
-    o.className = (o.className?o.className+' ':'')+cStr;
-  };
-
-  var removeClass = function(o,cStr) {
-    if (!o || !cStr || classContains(o,cStr)) {
-      return false;
-    }
-    o.className = o.className.replace(new RegExp('( '+cStr+')|('+cStr+')','g'),'');
-  };
-
-/*
-  var isChildOfNode = function(o,sNodeName) {
-    if (!o || !o.parentNode) {
-      return false;
-    }
-    sNodeName = sNodeName.toLowerCase();
-    do {
-      o = o.parentNode;
-    } while (o && o.parentNode && o.nodeName.toLowerCase() !== sNodeName);
-    return (o.nodeName.toLowerCase() === sNodeName ? o : null);
-  };
-*/
-
-  return {
-    css: {
-      has: classContains,
-      add: addClass,
-      remove: removeClass
-    },
-/*
-    dom: {
-      isChildOfNode: this.isChildOfNode
-    },
-*/
-    events: {
-      add: addEventHandler,
-      remove: removeEventHandler
-    }
-  }
 
 }());
 
 function ControlHandler(tapeUIDOM, soundObject) {
 
-  var soundObject;
-
-  var css, dom, events, eventMap, soundOK;
+  var dom, events, eventMap, soundOK;
 
   // percentage to jump with each click of the rewind / fast-forward buttons
   var rewind_ffwd_offset = 0.033;
@@ -1036,12 +957,13 @@ function ControlHandler(tapeUIDOM, soundObject) {
   events = {
     mousedown: function(e) {
       // need <a>
-      var target = e.target,
-          className = e.target.className;
+      var className = e.target.className;
       if (soundOK && typeof eventMap[className] !== 'undefined') {
         eventMap[className](e);
-        return events.stopEvent(e);
+        events.stopEvent(e);
+        return false;
       }
+      return true;
     },
     stopEvent: function(e) {
       e.preventDefault();
@@ -1051,40 +973,42 @@ function ControlHandler(tapeUIDOM, soundObject) {
       // simple/dumb: just toggle the playstate of the tape.
       if (ignoreNextClick) {
         ignoreNextClick = false;
-        return events.stopEvent(e);
+        events.stopEvent(e);
+        return false;
       }
-      var target = e.target,
-          className = e.target.className;
-      if (typeof eventMap[className] == 'undefined') {
+      var className = e.target.className;
+      if (typeof eventMap[className] === 'undefined') {
         soundObject.togglePause();
       } else {
-        return events.mousedown(e);
+        events.mousedown(e);
+        return false;
       }
+      return true;
     }
   };
 
   eventMap = {
-    'play': function(e) {
+    play: function() {
       soundObject.play();
     },
-    'rew': function() {
+    rew: function() {
       // rewind
-      var newPosition = Math.max(0, soundObject.position - soundObject.duration * rewind_ffwd_offset);
+      var newPosition = Math.max(0, soundObject.position - (soundObject.duration * rewind_ffwd_offset));
       if (soundObject.duration) {
         soundObject.setPosition(newPosition);
         // if not playing, force update?
-        tapeUIs[0].setProgress(newPosition/soundObject.duration);
+        tapeUIs[0].setProgress(newPosition / soundObject.duration);
       }
     },
-    'ffwd': function() {
+    ffwd: function() {
       // fast-forward
       var newPosition;
       if (soundObject.duration) {
-        newPosition = Math.min(soundObject.duration, soundObject.position + soundObject.duration * rewind_ffwd_offset);
+        newPosition = Math.min(soundObject.duration, soundObject.position + (soundObject.duration * rewind_ffwd_offset));
         soundObject.setPosition(newPosition);
       }
     },
-    'stop': function() {
+    stop: function() {
       // equivalent to digital pause
       soundObject.pause();
     }
@@ -1095,7 +1019,7 @@ function ControlHandler(tapeUIDOM, soundObject) {
     utils.events.add(tapeUIDOM.node, 'click', events.click);
   }
 
-  function init() {
+  function initControlHandler() {
     soundOK = soundManager.ok();
     dom.o = tapeUIDOM.node.querySelector('.controls');
     dom.play = dom.o.querySelector('.play');
@@ -1105,7 +1029,7 @@ function ControlHandler(tapeUIDOM, soundObject) {
     addEvents();
   }
 
-  init();
+  initControlHandler();
 
 }
 
@@ -1115,22 +1039,22 @@ function init() {
 
   if (!hasCanvas) {
     // assume a crap browser (e.g., IE 8.)
-    return false;
+    return;
   }
 
   var tapes,
-      i, s;
+      j, s;
 
   dragHandler.init();
 
   function genericStart() {
-    for (var i=tapeUIs.length; i--;) {
+    for (var i = tapeUIs.length; i--;) {
       tapeUIs[i].start();
     }
   }
 
   function genericStop() {
-    for (var i=tapeUIs.length; i--;) {
+    for (var i = tapeUIs.length; i--;) {
       tapeUIs[i].stop();
     }
   }
@@ -1142,9 +1066,9 @@ function init() {
       url: 'http://freshly-ground.com/data/audio/sm2/Chill With Schill (Summer 2012 Session Excerpt).mp3',
       multiShot: false,
       whileplaying: function() {
-        for (var i=tapeUIs.length; i--;) {
+        for (var i = tapeUIs.length; i--;) {
           // console.log(this.position, this.durationEstimate);
-          tapeUIs[i].setProgress(this.position/this.durationEstimate);
+          tapeUIs[i].setProgress(this.position / this.durationEstimate);
         }
       },
       onplay: genericStart,
@@ -1157,12 +1081,12 @@ function init() {
 
   tapes = document.querySelectorAll('div.tape');
 
-  for (i=tapes.length; i--;) {
+  for (j = tapes.length; j--;) {
     tapeUIs.push(new TapeUI({
-      node: tapes[i],
+      node: tapes[j],
       sound: s
     }));
-    tapeUIs[tapeUIs.length-1].init();
+    tapeUIs[tapeUIs.length - 1].init();
   }
 
   resetTapeUIs();
@@ -1181,6 +1105,52 @@ function delayInit() {
     init();
   }, 20);
 }
+
+utils = (function() {
+
+  var addEventHandler = (typeof window.addEventListener !== 'undefined' ? function(o, evtName, evtHandler) {
+    return o.addEventListener(evtName, evtHandler, false);
+  } : function(o, evtName, evtHandler) {
+    o.attachEvent('on' + evtName, evtHandler);
+  });
+
+  var removeEventHandler = (typeof window.removeEventListener !== 'undefined' ? function(o, evtName, evtHandler) {
+    return o.removeEventListener(evtName, evtHandler, false);
+  } : function(o, evtName, evtHandler) {
+    return o.detachEvent('on' + evtName, evtHandler);
+  });
+
+  var classContains = function(o, cStr) {
+    return (typeof o.className !== 'undefined' ? o.className.match(new RegExp('(\\s|^)' + cStr + '(\\s|$)')) : false);
+  };
+
+  var addClass = function(o, cStr) {
+    if (!o || !cStr || classContains(o, cStr)) {
+      return;
+    }
+    o.className = (o.className ? o.className + ' ' : '') + cStr;
+  };
+
+  var removeClass = function(o, cStr) {
+    if (!o || !cStr || classContains(o, cStr)) {
+      return;
+    }
+    o.className = o.className.replace(new RegExp('( ' + cStr + ')|(' + cStr + ')', 'g'), '');
+  };
+
+  return {
+    css: {
+      has: classContains,
+      add: addClass,
+      remove: removeClass
+    },
+    events: {
+      add: addEventHandler,
+      remove: removeEventHandler
+    }
+  };
+
+}());
 
 soundManager.setup({
   url: '../../swf/',

@@ -7,7 +7,6 @@ body {
   /* wacky IE 6 horizontal scrollbar hack */
   _width:99.5%;
   /* a little fun: transition font size with media shift. */
-  -moz-transition: font-size 0.1s;
   -webkit-transition: font-size 0.1s;
   /* font trickery */
   -moz-osx-font-smoothing: grayscale;
@@ -218,6 +217,7 @@ body.home #about-header .feature {
  position: relative;
  vertical-align: middle;
  font-size: 1.2em;
+ margin-right: 3%;
 }
 
 body.home #about-sm2 h2.special,
@@ -257,22 +257,11 @@ body.home #about-sm2 strong {
 a.feature-hot,
 a.feature {
   display: inline-block;
-  -moz-transition: all 0.25s ease-in-out;
-  -webkit-transition: all 0.25s ease-in-out;
   transition: all 0.25s ease-in-out;
   text-shadow: 0px 1px 0px rgba(0,0,0,0.33);
 }
 
-@-moz-keyframes highlight {
-  from {
-    box-shadow: 0px 0px 0px rgba(255,64,64,0);
-  }
-  to {
-    box-shadow: 0px 0px 16px rgba(255,64,64,0.75);
-  }
-}
-
-@-webkit-keyframes highlight {
+@keyframes highlight {
   from {
     box-shadow: 0px 0px 0px rgba(255,64,64,0);
   }
@@ -289,14 +278,10 @@ a.feature {
 a.feature-hot:hover,
 a.feature:hover,
 #col3 a.button:hover {
-  -moz-animation-duration: 0.5s;
-  -moz-animation-name: highlight;
-  -moz-animation-iteration-count: infinite;
-  -moz-animation-direction: alternate;
-  -webkit-animation-duration: 0.5s;
-  -webkit-animation-name: highlight;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-direction: alternate;
+  animation-duration: 0.5s;
+  animation-name: highlight;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
 body.home #about-sm2 h3 {
@@ -383,7 +368,7 @@ pre code,
 dt,
 #soundmanager-debug,
 .c3 ul li ul li {
-  font-family:Menlo,"DejaVu Sans Mono","DejaVuSansMonoBook",monaco,"Andale Mono","VT-100","Lucida Console","Courier New",monospace,courier,system,sans-serif;
+  font-family:Consolas,monaco,"Ubuntu Mono",courier,monospace,system;;
 }
 
 pre,
@@ -547,7 +532,6 @@ pre.block code,
   font-size: 100%;
   line-height:1.75em;
   background-image: -webkit-linear-gradient(#fcfcfc 50%, #fff 50%);
-  background-image: -o-linear-gradient(#fcfcfc 50%, #fff 50%);
   background-image: linear-gradient(#fcfcfc 50%, #fff 50%);
   background-size: 100% 3.5em;
   background-origin: content-box;
@@ -856,11 +840,7 @@ ul li {
   min-width:19em;
   max-width:21em;
   background:#3399cc;
-  background: -moz-linear-gradient(top, rgba(51,153,204,0.99) 0%, rgba(35,96,127,0.96) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(51,153,204,0.99)), color-stop(100%,rgba(35,96,127,0.96))); /* Chrome,Safari4+ */
   background: -webkit-linear-gradient(top, rgba(51,153,204,0.99) 0%,rgba(35,96,127,0.96) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, rgba(51,153,204,0.99) 0%,rgba(35,96,127,0.96) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, rgba(51,153,204,0.99) 0%,rgba(35,96,127,0.96) 100%); /* IE10+ */
   background: linear-gradient(top, rgba(51,153,204,0.99) 0%,rgba(35,96,127,0.96) 100%); /* W3C */
   text-shadow: 0px 1px 0px rgba(0,0,0,0.25);
   _width:19em;
@@ -1137,7 +1117,7 @@ ul.standard ul {
 }
 
 .wedge .r {
-  margin-top:-15px;
+  margin-top:-16px;
   border-top:none;
   height:16px;
   border-bottom:2em solid #3399cc;
@@ -1199,7 +1179,6 @@ ul.standard ul {
   font-size: 97%;
   line-height:2.4em;
   text-indent:0.5em;
-  padding: 0px 0.25em;
   cursor:hand;
   border-bottom: 1px dotted #eee;
 }
@@ -1233,7 +1212,7 @@ ul.standard ul {
 .c3 h4 {
   font-size:1em;
   margin:0px;
-  padding:0.4em 0.2em 0.4em 0.75em;
+  padding:0.39em 0.2em 0.4em 0.75em;
   vertical-align:middle;
   color:#333;
   background-color: #f3f3f3;
@@ -1248,14 +1227,6 @@ ul.standard ul {
 }
 
 #get-satisfaction h2 a {
-  color:#fff;
-}
-
-#get-satisfaction a {
-  color:#444;
-}
-
-#get-satisfaction a:hover {
   color:#fff;
 }
 
@@ -1408,8 +1379,6 @@ body.home #support-wrapper {
   height: 0px;
   margin: 0px;
   /* smooth height transitions, why not */
-  -webkit-transition: height 0.5s ease-in-out;
-  -moz-transition: height 0.5s ease-in-out;
   transition: height 0.5s ease-in-out;
 }
 
@@ -1744,8 +1713,6 @@ a.warning:hover {
   color:#999;
   font-size:0.9em;
   margin-top:-0.75em;
-  -webkit-transform:rotate(-15deg);
-  -moz-transform:rotate(-15deg);
   transform:rotate(-15deg);
 }
 
@@ -2029,6 +1996,7 @@ ul.graphic li a.sm2_link {
   /* Doesn't work on this page. */
   -webkit-transition-property: none;
   -webkit-transition: none;
+  transition: none;
 }
 
 .c2 ul.playlist li a {
@@ -2100,17 +2068,7 @@ body.home #sm2-container {
   _margin:-8px 0px 0px 0px;
 }
 
-@-moz-keyframes flashblock {
-  from {
-    border-color: #ff3333;
-  }
-  
-  to {
-    border-color: #fff;
-  }
-}
-
-@-webkit-keyframes flashblock {
+@keyframes flashblock {
   from {
     border-color: #ff3333;
   }
@@ -2123,12 +2081,9 @@ body.home #sm2-container {
 body.home #sm2-container.swf_timedout {
   /* blocked state */
   border:1px solid #ff3333;
-  -moz-animation-duration: 1s;
-  -moz-animation-name: flashblock;
-  -moz-animation-iteration-count: 5;
-  -webkit-animation-duration: 1s;
-  -webkit-animation-name: flashblock;
-  -webkit-animation-iteration-count: 5;
+  animation-duration: 1s;
+  animation-name: flashblock;
+  animation-iteration-count: 5;
   width:48px;
   height:48px;
 }
@@ -2733,11 +2688,7 @@ body.home #sm2-visualization .ui360 a {
 
 body.home #sm2-visualization .ui360 a,
 body.home #sm2-visualization .ui360 canvas {
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
-  -moz-transition-property: background-color, border, box-shadow;
-  -webkit-transition-property: background-color, border, box-shadow;
   transition-property: background-color, border, box-shadow;
 }
 

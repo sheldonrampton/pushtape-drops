@@ -38,10 +38,6 @@ dependencies[] = link
 dependencies[] = colorbox
 dependencies[] = libraries
 
-; WYSIWYG editing
-dependencies[] = wysiwyg_starter
-dependencies[] = wysiwyg_starter_formats
-
 ;Install Profile
 dependencies[] = pushtape_ui
 dependencies[] = pushtape_discography
@@ -56,3 +52,9 @@ dependencies[] = pushtape_services
 
 files[] = pushtape.profile
 
+
+; Information added by Drupal.org packaging script on 2018-10-31
+version = "7.x-1.9"
+core = "7.x"
+project = "pushtape"
+datestamp = "1541017132"

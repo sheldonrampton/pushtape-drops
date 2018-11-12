@@ -8,7 +8,7 @@
 
 ; The version of Drupal the profile is built for. You must include both a
 ; major and a minor release - just specifying 6.x won't work
-core = 7.41
+core = 7.60
 api = 2
 
 ; OPTIONAL ATTRIBUTES
@@ -33,39 +33,34 @@ api = 2
 ; you would use:
 
 ;Contrib
-projects[features] = 2.7
+projects[features] = 2.10
 projects[pathauto] = 1.3
-projects[entityreference] = 1.1
-projects[entity] = 1.6
-projects[ctools] = 1.9
-projects[token] = 1.6
-projects[views] = 3.13
+projects[entityreference] = 1.5
+projects[entity] = 1.9
+projects[ctools] = 1.12
+projects[token] = 1.7
+projects[views] = 3.18
 ; Events
-projects[date] = 2.9
-projects[link] = 1.3
+projects[date] = 2.10
+projects[link] = 1.4
 ; Photos
-projects[colorbox] = 2.10
-projects[libraries] = 2.2
-; WYSIWYG text editing
-projects[wysiwyg_starter] = 1.x-dev
-
-; Soundmanager2 module (deprecated, Pushtape Player only needs libraries/soundmanager2)
-; projects[soundmanager2] = 2.0-beta1
+projects[colorbox] = 2.13
+projects[libraries] = 2.3
 
 ;Distribution Custom
-projects[pushtape_ui] = 1.0-beta2
-projects[pushtape_player] = 1.0-beta2
-projects[pushtape_services] = 1.0-beta3
+projects[pushtape_ui] = 1.0
+projects[pushtape_player] = 1.1
+projects[pushtape_services] = 1.1
 ; Distribution Features
-projects[pushtape_discography] = 1.0-beta2
-projects[pushtape_admin] = 1.0-beta2
-projects[pushtape_news] = 1.0-beta2
-projects[pushtape_events] = 1.0-beta2
-projects[pushtape_page] = 1.0-beta1
-projects[pushtape_photos] = 1.0-beta2
-projects[pushtape_audio] = 1.0-beta3
+projects[pushtape_discography] = 1.0
+projects[pushtape_admin] = 1.0
+projects[pushtape_news] = 1.0
+projects[pushtape_events] = 1.0
+projects[pushtape_page] = 1.0
+projects[pushtape_photos] = 1.0
+projects[pushtape_audio] = 1.0
 ; Distribution Theme
-projects[flux] = 1.0-beta7
+projects[flux] = 1.0
 
 ; To include a code library external to the Drupal project, such as
 ; jQuery UI or TinyMCE, you can include them using the 'libraries'
