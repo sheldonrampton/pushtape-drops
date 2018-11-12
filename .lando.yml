@@ -1,4 +1,4 @@
-name: hap-smith-com
-recipe: custom
+name: hap-smith
+recipe: drupal7
 config:
   webroot: .
