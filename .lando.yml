@@ -1,4 +1,4 @@
-name: hap-smith
+name: hapsmith
 recipe: drupal7
 config:
   webroot: .

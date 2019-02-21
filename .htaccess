@@ -3,8 +3,13 @@
 #
 
 # Protect files and directories from prying eyes.
-<FilesMatch "\.(engine|inc|info|install|make|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl)(~|\.sw[op]|\.bak|\.orig|\.save)?$|^(\..*|Entries.*|Repository|Root|Tag|Template)$|^#.*#$|\.php(~|\.sw[op]|\.bak|\.orig\.save)$">
-  Order allow,deny
+<FilesMatch "\.(engine|inc|info|install|make|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl)(~|\.sw[op]|\.bak|\.orig|\.save)?$|^(\.(?!well-known).*|Entries.*|Repository|Root|Tag|Template|composer\.(json|lock))$|^#.*#$|\.php(~|\.sw[op]|\.bak|\.orig\.save)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+  </IfModule>
 </FilesMatch>
 
 # Don't show directory listings for URLs which map to a directory.
@@ -18,10 +23,6 @@ ErrorDocument 404 /index.php
 
 # Set the default handler.
 DirectoryIndex index.php index.html index.htm
-
-SetEnv force-no-vary
-SetEnv downgrade-1.0
-SetEnv no-gzip 1
 
 # Override PHP settings that cannot be changed at runtime. See
 # sites/default/default.settings.php and drupal_environment_initialize() in
@@ -37,8 +38,6 @@ SetEnv no-gzip 1
   php_value mbstring.http_output            pass
   php_flag mbstring.encoding_translation    off
 </IfModule>
-php_value post_max_size                   31M
-php_value upload_max_filesize             30M
 
 # Requires mod_expires to be enabled.
 <IfModule mod_expires.c>
@@ -86,7 +85,7 @@ php_value upload_max_filesize             30M
   # If you do not have mod_rewrite installed, you should remove these
   # directories from your webroot or otherwise protect them from being
   # downloaded.
-  RewriteRule "(^|/)\." - [F]
+  RewriteRule "/\.|^\.(?!well-known/)" - [F]
 
   # If your site can be accessed both with and without the 'www.' prefix, you
   # can use one of the following settings to redirect users to your preferred
@@ -122,6 +121,30 @@ php_value upload_max_filesize             30M
   RewriteCond %{REQUEST_URI} !=/favicon.ico
   RewriteRule ^ index.php [L]
 
+  # Rules to correctly serve gzip compressed CSS and JS files.
+  # Requires both mod_rewrite and mod_headers to be enabled.
+  <IfModule mod_headers.c>
+    # Serve gzip compressed CSS files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -s
+    RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
+
+    # Serve gzip compressed JS files if they exist and the client accepts gzip.
+    RewriteCond %{HTTP:Accept-encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}\.gz -s
+    RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
+
+    # Serve correct content types, and prevent mod_deflate double gzip.
+    RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
+    RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
+
+    <FilesMatch "(\.js\.gz|\.css\.gz)$">
+      # Serve correct encoding type.
+      Header set Content-Encoding gzip
+      # Force proxies to cache gzipped & non-gzipped css/js files separately.
+      Header append Vary Accept-Encoding
+    </FilesMatch>
+  </IfModule>
 </IfModule>
 
 # Add headers to all responses.
