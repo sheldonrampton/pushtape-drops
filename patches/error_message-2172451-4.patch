@@ -1,0 +1,21 @@
+diff --git a/pushtape_ui.module b/pushtape_ui.module
+index 0b2f75d..7f8a2d6 100644
+--- a/pushtape_ui.module
++++ b/pushtape_ui.module
+@@ -356,10 +356,12 @@ function pushtape_ui_node_load($nodes, $types) {
+         $include =  variable_get('pushtape_inherit_fields_track', array('field_artist', 'field_artwork', 'field_release_date'));
+         // When loading a track node, if track field is empty load from associated album node field.
+         $pushtape_ui_override = array();
+-        foreach($shared_fields as $field) {
+-          if (empty($node->$field) && in_array($field, $include)) {
+-            $node->$field = $album->$field;
+-            $pushtape_ui_override[] = $field;
++        if ($album) {
++          foreach($shared_fields as $field) {
++            if (empty($node->$field) && in_array($field, $include)) {
++              $node->$field = $album->$field;
++              $pushtape_ui_override[] = $field;
++            }
+           }
+         }
+         // We add an override flag to the node object to signal a field override.
