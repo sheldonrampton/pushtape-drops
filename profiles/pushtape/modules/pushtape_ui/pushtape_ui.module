@@ -36,7 +36,7 @@ function pushtape_ui_form_alter(&$form, &$form_state, $form_id) {
        *
        * See pushtape.js for client side manipulation of these elements
        */
-
+      
       // Add a little UI checkbox for the artwork.
       $form['field_artwork_checkbox'] = array(
         '#title' => t('Add track artwork'),
@@ -48,7 +48,7 @@ function pushtape_ui_form_alter(&$form, &$form_state, $form_id) {
       $form['field_artwork']['#states'] = array('visible' => array(':input[name="field_artwork_checkbox"]' => array('checked' => TRUE)));
       $form['field_artwork']['#prefix'] = '<div class="upload-artwork indent">';
       $form['field_artwork']['#suffix'] = '</div>';
-
+      
       // Add a UI checkbox for the album field
       $form['field_album_checkbox'] = array(
         '#title' => t('Part of an album'),
@@ -73,7 +73,7 @@ function pushtape_ui_form_alter(&$form, &$form_state, $form_id) {
         '#description' => '(You will add more album info in the next step.)',
         '#states' => array(
           'visible' => array(
-            ':input[name="field_album_checkbox"]' => array('checked' => TRUE),
+            ':input[name="field_album_checkbox"]' => array('checked' => TRUE),  
             ':input[name="field_album[und]"]' => array('value' => '_none'),  // TODO: broken!
           )
          ),
@@ -100,7 +100,7 @@ function pushtape_ui_form_alter(&$form, &$form_state, $form_id) {
           '#title' => 'Pushtape UI Settings',
           '#collapsible' => TRUE,
           '#collapsed' => TRUE,
-          '#group' => 'additional_settings',
+          '#group' => 'additional_settings',             
           );
         $form['pushtape_inherit']['pushtape_inherit_fields'] = array(
           '#type' => 'checkboxes',
@@ -208,21 +208,21 @@ function pushtape_ui_album_node_form_submit($form, &$form_state) {
  */
 function pushtape_ui_menu() {
   $items['user/%user/logout'] = array(
-    'title' => 'Log out',
-    'access callback' => 'user_is_logged_in',
-    'page callback' => 'pushtape_user_logout_redirect',
-    'weight' => 10,
-    'type' => MENU_LOCAL_TASK,
+    'title' => 'Log out', 
+    'access callback' => 'user_is_logged_in', 
+    'page callback' => 'pushtape_user_logout_redirect', 
+    'weight' => 10, 
+    'type' => MENU_LOCAL_TASK,    
   );
   return $items;
 }
 
 function pushtape_user_logout_redirect() {
-  drupal_goto('user/logout');
+  drupal_goto('user/logout');  
 }
 
 function pushtape_user_logout() {
-  $_GET['destination'] = 'user';
+  $_GET['destination'] = 'user';  
 }
 
 /**
@@ -282,7 +282,7 @@ function theme_pushtape_ui_field_multiple_value_form($variables) {
     usort($items, '_field_sort_items_value_helper');
 
     // Add the items as table rows.
-    foreach ($items as $key => $item) {
+    foreach ($items as $key => $item) {      
       if ($item['target_id']['#default_value']) {
         $track_id = pushtape_ui_get_related_track_id($item['target_id']);
         $track = node_load($track_id);
@@ -356,12 +356,12 @@ function pushtape_ui_node_load($nodes, $types) {
         $include =  variable_get('pushtape_inherit_fields_track', array('field_artist', 'field_artwork', 'field_release_date'));
         // When loading a track node, if track field is empty load from associated album node field.
         $pushtape_ui_override = array();
-        if ($album) {
+        if ($album) { 
           foreach($shared_fields as $field) {
             if (empty($node->$field) && in_array($field, $include)) {
               $node->$field = $album->$field;
               $pushtape_ui_override[] = $field;
-            }
+            }            
           }
         }
         // We add an override flag to the node object to signal a field override.
@@ -406,7 +406,7 @@ function pushtape_ui_field_formatter_info() {
     'pushtape_ui_tracklist_view' => array(
       'label' => t('Pushtape: Tracklist View'),
       'field types' => array('entityreference'),
-      'settings' => array('view_name' => 'pushtape_ordered_list'),
+      'settings' => array('view_name' => 'pushtape_ordered_list'), 
     ),
   );
 }
@@ -421,10 +421,10 @@ function pushtape_ui_field_formatter_settings_form($field, $instance, $view_mode
   $settings = $display['settings'];
   //Initialize the element variable
   $element = array();
-
+  
   // Safe fallback if Views is disabled
   $view_options['pushtape_ordered_list'] = t('Default - Ordered list of linked titles');
-
+      
   // Add all views that are enabled and tagged with 'pushtape' as options
   if (module_exists('views')) {
     $views = views_get_all_views();
@@ -435,7 +435,7 @@ function pushtape_ui_field_formatter_settings_form($field, $instance, $view_mode
       }
     }
   }
-
+  
   //Add select box
   $element['view_name'] = array(
     '#type'           => 'select',                           // Use a select box widget
@@ -455,7 +455,7 @@ function pushtape_ui_field_formatter_settings_summary($field, $instance, $view_m
   $settings = $display['settings'];
   $summary = t('Tracklist view: "@view"', array(
     '@view'     => $settings['view_name'],
-  ));
+  )); 
   return $summary;
 }
 
@@ -466,7 +466,7 @@ function pushtape_ui_field_formatter_view($entity_type, $entity, $field, $instan
   $element = array();
   $settings = $display['settings'];
   switch ($display['type']) {
-    case 'pushtape_ui_tracklist_view':
+    case 'pushtape_ui_tracklist_view':    
       if ($settings['view_name'] != 'pushtape_ordered_list' && module_exists('views')) {
         // Load up a custom view
         $view = views_embed_view($settings['view_name']);
@@ -483,7 +483,7 @@ function pushtape_ui_field_formatter_view($entity_type, $entity, $field, $instan
           '#theme' => 'item_list',
           '#items' => $rows,
           '#type' => 'ol',
-        );
+        );          
       }
       break;
   }
@@ -524,20 +524,20 @@ function pushtape_ui_date_formats() {
   return array(
     // January 2, 1980
     array(
-      'type' => 'long',
-      'format' => 'F j, Y',
+      'type' => 'long', 
+      'format' => 'F j, Y', 
       'locales' => array(),
     ),
     // Jan 2, 1980
     array(
-      'type' => 'medium',
-      'format' => 'M j, Y',
+      'type' => 'medium', 
+      'format' => 'M j, Y', 
       'locales' => array(),
     ),
     // 1/2/1980
     array(
-      'type' => 'short',
-      'format' => 'n/j/Y',
+      'type' => 'short', 
+      'format' => 'n/j/Y', 
       'locales' => array(),
     ),
   );
